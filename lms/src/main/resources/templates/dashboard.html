@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Head content as it is -->
+
+    <style type="text/css">
+        .block-link {
+            display: block;
+            padding: 20px;
+            margin: 10px;
+            background-color: #428bca;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .block-link:hover {
+            background-color: #3071a9;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header and Breadcrumb as it is -->
+
+        <div class="row">
+            <div class="col-lg-12 ">
+                <div class="alert alert-info" th:if="${(param.successMessage != null)}">
+                    <span th:text="${param.successMessage[0]}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grids">
+            <!-- Add your new blocks with links -->
+            <div class="col-md-4">
+                <a class="block-link" th:href="@{/user/ams}">Attendance Management</a>
+            </div>
+            <div class="col-md-4">
+                <a class="block-link" th:href="@{/user/lms}">Leave Management</a>
+            </div>
+            <div class="col-md-4">
+                <a class="block-link" th:href="@{/user/pms}">Performance Management</a>
+            </div>
+        </div>
+
+        <!-- Rest of the content as it is -->
+
+        <!-- Script for full calendar and other scripts -->
+    </div>
+    <!-- Copy rights and other divs as it is -->
+</body>
+</html>

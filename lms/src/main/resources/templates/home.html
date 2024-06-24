@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <title>Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -61,7 +62,7 @@
 											</div>	
 										</a>
 										<ul class="dropdown-menu drp-mnu"> 
-											<li> <a href="#"><i class="fa fa-user"></i> Profile</a> </li> 
+											<li> <a th:href="@{/user/Profile}"><i class="fa fa-user"></i> Profile</a> </li> 
 											<li> <a th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a> </li>
 										</ul>
 									</li>
@@ -70,6 +71,7 @@
 							
 				     <div class="clearfix"> </div>	
 				</div>
+				
 <!--heder end here-->
 		<ol class="breadcrumb">
             <li class="breadcrumb-item"><a th:href="@{/user/home}">Home</a> <i class="fa fa-angle-right"></i></li>
@@ -77,13 +79,16 @@
         
         <div class="row">
               <div class="col-lg-12 ">
-                  <div class="alert alert-info" th:if="${(param.successMessage != null)}">
+					<div class="alert alert-info" th:if="${(param.NoBalanceMessage!= null)}" style="color: red;">
+						<p th:text="${param.NoBalanceMessage[0]}"></p>
+					</div>
+					<div class="alert alert-info" th:if="${(param.successMessage != null)}">
 						<span th:text="${param.successMessage[0]}"></span>
-                  </div>
+					</div>
                  
               </div>
         </div>
-        
+		
         <div class="grids">
 			<div class="agile-calendar-grid">
 				<div class="page">
@@ -91,8 +96,10 @@
 							<span class="label label-primary"><input type="checkbox" id="pending" value="pending" class="filterStatus"> Pending</span>
 							<span class="label label-success"><input type="checkbox" id="accepted" value="accepted" class="filterStatus"> Accepted</span>
 							<span class="label label-danger"><input type="checkbox" id="rejected" value="rejected" class="filterStatus"> Rejected</span>
+							<span class="label label-warning"><input type="checkbox" id="cancel" value="cancel" class="filterStatus" > Canceled</span>
+							<button id="toggleButton" style="display: none; margin-left: auto;">Switch to Admin Leaves</button>
 					</div>
-					
+						
 					<div class="w3l-calendar-left">
 						<div class="monthly" id="mycalendar"></div>
 					</div>
@@ -104,8 +111,9 @@
 
 <script th:src="@{/js/moment.min.js}"></script>
 <script th:src="@{/js/fullcalendar.min.js}"></script>
-<script>
-var urlSrc = '/user/get-all-leaves';
+<!-- <script>
+var urlSrc = '/admin/get-all-leaves';
+var urlSrc = '/user/get-all-user-leaves';
 $(document).ready(function() {
 
     $('#mycalendar').fullCalendar({
@@ -145,13 +153,69 @@ $(document).ready(function() {
 
     $('input:checkbox').change(function(){
         $('#mycalendar').fullCalendar('removeEventSource', urlSrc);
-        urlSrc = '/user/get-all-leaves?pending='+$('#pending').is(':checked')+'&accepted='+$('#accepted').is(':checked')+'&rejected='+$('#rejected').is(':checked')+'';
+		urlSrc = '/admin/get-all-leaves?pending='+$('#pending').is(':checked')+'&accepted='+$('#accepted').is(':checked')+'&rejected='+$('#rejected').is(':checked')+'&cancel='+$('#cancel').is(':checked')+'';
+        urlSrc = '/user/get-all-user-leaves?pending='+$('#pending').is(':checked')+'&accepted='+$('#accepted').is(':checked')+'&rejected='+$('#rejected').is(':checked')+'&cancel='+$('#cancel').is(':checked')+'';
         $('#mycalendar').fullCalendar('addEventSource', urlSrc);
         $('#mycalendar').fullCalendar('refetchEvents');
     });
 
   });
 
+</script> -->
+
+<script>
+	$(document).ready(function() {
+		var adminUrl = '/admin/get-all-leaves';
+		var userUrl = '/user/get-all-user-leaves';
+		var urlSrc = userUrl;
+		var isAdmin = true; // This should be dynamically set based on actual user role
+
+		// Show button if user is admin
+		if (isAdmin) {
+			$('#toggleButton').show();
+		}
+
+		$('#mycalendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,listWeek'
+			},
+			defaultDate: moment().format("YYYY-MM-DD"),
+			eventLimit: true,
+			events: {
+				url: urlSrc,
+				error: function() {
+					console.log('Error fetching events');
+				}
+			}
+		});
+
+		$('#toggleButton').click(function() {
+			urlSrc = urlSrc === userUrl ? adminUrl : userUrl;
+			$(this).text(urlSrc === userUrl ? 'Switch to Admin Leaves' : 'Switch to User Leaves');
+			$('#mycalendar').fullCalendar('removeEventSource', adminUrl);
+			$('#mycalendar').fullCalendar('removeEventSource', userUrl);
+			$('#mycalendar').fullCalendar('addEventSource', {
+				url: urlSrc,
+				error: function() {
+					console.log('Error fetching events');
+				}
+			});
+			$('#mycalendar').fullCalendar('refetchEvents');
+		});
+
+		$('input:checkbox').change(function() {
+			$('#mycalendar').fullCalendar('removeEventSource', urlSrc);
+			urlSrc = (urlSrc === adminUrl ? adminUrl : userUrl) + 
+					 '?pending=' + $('#pending').is(':checked') +
+					 '&accepted=' + $('#accepted').is(':checked') +
+					 '&rejected=' + $('#rejected').is(':checked') +
+					 '&cancel=' + $('#cancel').is(':checked');
+			$('#mycalendar').fullCalendar('addEventSource', urlSrc);
+			$('#mycalendar').fullCalendar('refetchEvents');
+		});
+	});
 </script>
 
 <!-- script-for sticky-nav -->
@@ -193,9 +257,9 @@ $(document).ready(function() {
 									<ul id="menu" >
 										<li><a th:href="@{/user/home}"><i class="fa fa-home"></i> <span>Home</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
 										
 										<li><a th:href="@{/user/apply-leave}"><i class="fa fa-calendar-plus-o"></i> <span>Apply Leave</span><div class="clearfix"></div></a></li>
 										

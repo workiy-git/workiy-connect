@@ -65,9 +65,20 @@
 		<ol class="breadcrumb">
             <li class="breadcrumb-item"><a th:href="@{/user/home}">Home</a> <i class="fa fa-angle-right"></i> Apply Leave</li>
         </ol>
-        
+        <div class="row">
+              <div class="col-lg-12 ">
+					<div class="alert alert-info" th:if="${(param.NoBalanceMessage!= null)}" style="color: red;">
+						<p th:text="${param.NoBalanceMessage[0]}"></p>
+					</div>
+              </div>
+        </div>
         <div class="grid-form1">
-            <h3>Request For Leave</h3>
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+				<h3>Request For Leave</h3>
+				<p style="margin-left: auto;">leave left: <span th:text="${leaveBalance}"></span> days</p>
+			
+			</div>
+
             <div class="tab-content tab-pane active" id="horizontal-form">
                 
                 <form class="form-horizontal" th:action="@{/user/apply-leave}" method="post" th:object="${leaveDetails}">
@@ -164,9 +175,9 @@
 									<ul id="menu" >
 										<li><a th:href="@{/user/home}"><i class="fa fa-home"></i> <span>Home</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
 										
 										<li><a th:href="@{/user/apply-leave}"><i class="fa fa-calendar-plus-o"></i> <span>Apply Leave</span><div class="clearfix"></div></a></li>
 										

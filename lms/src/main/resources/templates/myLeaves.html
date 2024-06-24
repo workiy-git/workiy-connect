@@ -91,6 +91,7 @@
                 		<th>Leave Type</th>
                 		<th>Reason</th>
                 		<th>Status</th>
+						<th>Request</th>
                 	  </tr>
 					</thead>
 					<tbody>
@@ -102,10 +103,15 @@
 	                	<td th:text="${leaveInfo.leaveType}"></td>
 	                	<td th:text="${leaveInfo.reason}"></td>
 	                	<td>
-	                		<span th:if="${leaveInfo.active}" class="label-primary" style="color: white;">PENDING</span>
-	                		<span th:if="${!leaveInfo.active && leaveInfo.acceptRejectFlag}" class="label-success" style="color: white;">ACCEPTED</span>
+	                		<span th:if="${leaveInfo.active && !leaveInfo.iscancel}" class="label-primary" style="color: white;">PENDING</span>
+							<span th:if="${!leaveInfo.active && leaveInfo.acceptRejectFlag}" class="label-success" style="color: white;">ACCEPTED</span>
 	                		<span th:if="${!leaveInfo.active && !leaveInfo.acceptRejectFlag}" class="label-danger" style="color: white;">REJECTED</span>
+							<span th:if="${leaveInfo.active && leaveInfo.iscancel}" class="label-primary" style="color: white;">CANCELED</span>
 	                	</td>
+						<td>
+							<span th:if="${leaveInfo.active && !leaveInfo.iscancel}" class="btn btn-secondary" style="color: white;"><a th:href="@{/user/edit-leave/{id}(id=${leaveInfo.id})}">edit</a> &nbsp&nbsp<b style="color: black;">|</b>&nbsp&nbsp<a th:href="@{/user/cancel-leave/{id}(id=${leaveInfo.id})}">Cancel</a></span>	
+							<span th:if="${!leaveInfo.active && leaveInfo.acceptRejectFlag}" class="btn btn-danger" style="color: white;"><a th:href="@{/user/withdraw/{id}(id=${leaveInfo.id})}">withdraw</a></span>
+						</td>	
                 	  </tr>
 					</tbody>
 				  </table>
@@ -152,9 +158,9 @@
 									<ul id="menu" >
 										<li><a th:href="@{/user/home}"><i class="fa fa-home"></i> <span>Home</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
 										
-										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
 										
 										<li><a th:href="@{/user/apply-leave}"><i class="fa fa-calendar-plus-o"></i> <span>Apply Leave</span><div class="clearfix"></div></a></li>
 										

@@ -42,13 +42,15 @@
 			<p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
 		</div>
 		<form th:action="@{/login}" method="post">
-			<div class="username">
-				<span class="username">Username:</span>
-				<input type="text" id="email" name="email" class="name" placeholder="" required="">
-				<div class="clearfix"></div>
-			</div>
+			<div class="special-container">
+				 <div class="container">
+					 <input required="" type="text" id="email" name="email"class="input">
+					 <label class="label">Username</label>
+				 </div>
+			  </div>
+
 			<div class="password-agileits">
-				<span class="username">Password:</span>
+				<span class="username no-select">Password:</span>
 				<input type="password" id="password" name="password" class="password" placeholder="" required="">
 				<div class="clearfix"></div>
 			</div>
@@ -62,7 +64,7 @@
 			<div class="clearfix"></div>
 		</form>
 			<div class="back">
-				<a th:href="@{/registration}">Register</a>
+				<a th:href="@{/admin/register}" style="display: none;">Register</a>
 			</div>
 			<div class="footer">
 				<p>Workiy Connect</p>
@@ -72,3 +74,6 @@
 	</div>
 </body>
 </html>
+<style>
+	
+</style>

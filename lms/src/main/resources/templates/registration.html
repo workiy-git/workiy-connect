@@ -28,10 +28,11 @@
 	<div class="main-wthree">
 	<div class="container">
 	<div class="sin-w3-agile">
+	<a th:href="@{/admin/manage-users}"><button>Back</button></a>
 		<h2>Leave Management System</h2>
 		<h2>Sign Up</h2>
 		<label class="alert alert-info" style="width: 100%;" th:if="${successMessage != null}" th:text="${successMessage}"></label>
-		<form th:action="@{/registration}" th:object="${userInfo}" method="post">
+		<form th:action="@{/admin/register}" th:object="${userInfo}" method="post">
 			<div class="username">
 				<span class="username">First Name:</span>
 				<input type="text" th:field="*{firstName}" class="name" placeholder="First Name" required>
@@ -67,12 +68,20 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="login-w3">
-					<input type="submit" class="login" value="Sign Up">
+					<input type="submit" class="login " style="display: none;" value="Sign Up" id="signupButton" >
+					<button id="displayButton" class="login">Done</button>
+					<script>
+						document.getElementById("displayButton").addEventListener("click", function() {
+							// Simulate a click on the hidden input element
+							document.getElementById("signupButton").click();
+						});
+					</script>
+
 			</div>
 			<div class="clearfix"></div>
 		</form>
 		<div class="back">
-						<a th:href="@{/login}">LOGIN</a>
+						<a th:href="@{/login}" style="display: none;">LOGIN</a>
 				</div>
 				<div class="footer">
 					<p>Workiy Connect.</p>

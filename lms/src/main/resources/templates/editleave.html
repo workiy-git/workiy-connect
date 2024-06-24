@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Change Password</title>
+<title>Apply Leave</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -23,6 +23,8 @@
 <!-- //lined-icons -->
 <link rel="shortcut icon" th:href="@{/img/favicon.png}">
 <script th:src="@{/js/bootbox.min.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" type="text/css">
 </head> 
 <body>
 <div class="page-container">
@@ -49,7 +51,7 @@
 										<div class="clearfix"></div>	
 									</div>	
 								</a>
-								<ul class="dropdown-menu drp-mnu">
+								<ul class="dropdown-menu drp-mnu"> 
 									<li> <a href="#"><i class="fa fa-user"></i> Profile</a> </li> 
 									<li> <a th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a> </li>
 								</ul>
@@ -60,72 +62,93 @@
 				     <div class="clearfix"> </div>	
 				</div>
 <!--heder end here-->
-		<ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/user/home}">Home</a> <i class="fa fa-angle-right"></i> Change Password</li>
-        </ol>
-        
-        <div class="grid-form1">
-            <h3>Change Password</h3>
-            <div class="tab-content tab-pane active" id="horizontal-form">
-                
-                <form class="form-horizontal">
-                	<div class="alert alert-danger" th:if="${(param.successMessage != null)}">
-						<span th:text="${param.successMessage[0]}"></span>
-                    </div>
-                    <div class="form-group">
-						<label class="col-sm-4 control-label">Current Password :</label>
-						<div class="col-sm-6">
-							<input type="password" id="currentPassword" name="currentPassword" class="form-control1">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">New Password :</label>
-						<div class="col-sm-6">
-							<input type="password" id="newPassword" name="newPassword" class="form-control1">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Re-Enter New Password :</label>
-						<div class="col-sm-6">
-							<input type="password" id="reEnterPassword" name="reEnterPassword" class="form-control1">
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-8 col-sm-offset-4">
-							<button type="button" class="btn-primary btn" onclick="validateChangePassword()">Change Password</button>
-							<a th:href="@{/user/home}"><button type="button" class="btn-default btn">Cancel</button></a>
-						</div>
-					</div>
-                </form>              
-                
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a th:href="@{/user/home}">Home</a>
+        <i class="fa fa-angle-right"></i>
+        Edit Leave
+    </li>
+</ol>
+<div class="row">
+	<div class="col-lg-12 ">
+		  <div class="alert alert-info" th:if="${(param.NoBalanceMessage!= null)}" style="color: red;">
+			  <p th:text="${param.NoBalanceMessage[0]}"></p>
+		  </div>
+	</div>
+</div>
+<div class="grid-form1">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+		<h3>Request For Leave</h3>
+		<p style="margin-left: auto;">leave left: <span th:text="${leaveBalance}"></span> days</p>
+	</div>
+
+    <div class="tab-content tab-pane active" id="horizontal-form">
+        <form class="form-horizontal" th:action="@{/user/edit-leave/{id}(id=${leaveDetails.id})}" th:object="${leaveDetails}" method="post">
+
+            <!-- Hidden field for leave ID -->
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">From Date :</label>
+                <div class="col-sm-6">
+                    <input type="text" th:value="${fromDate}" th:field="*{fromDate}"  placeholder="From Date" class="form-control1 leave-date" />
+					<!-- Text field for displaying the formatted date -->
+					<!-- <input type="text" th:value="${formattedFromDate}" placeholder="From Date" class="form-control1 leave-date" /> -->
+					<!-- Hidden field for binding the actual fromDate value -->
+					<!-- <input type="hidden" th:field="*{fromDate}" /> -->
+	
+				</div>
+                <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></label>
             </div>
-         </div>
 
+            <div class="form-group">
+                <label class="col-sm-4 control-label">To Date :</label>
+                <div class="col-sm-6">
+                    <input type="text" th:value="${toDate}" th:field="*{toDate}"  placeholder="To Date" class="form-control1 leave-date" />
+					<!-- Text field for displaying the formatted date -->
+					<!-- <input type="text" th:value="${formattedToDate}" placeholder="To Date" class="form-control1 leave-date" /> -->
+					<!-- Hidden field for binding the actual fromDate value -->
+					<!-- <input type="hidden" th:field="*{toDate}" /> -->
+	
+				</div>
+                <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></label>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Leave Type :</label>
+                <div class="col-sm-6">
+                    <select th:field="*{leaveType}" class="form-control1">
+                        <option value="">Select</option>
+                        <option value="CASUAL LEAVE" th:selected="${leaveDetails.leaveType == 'CASUAL LEAVE'}">CASUAL LEAVE</option>
+                        <option value="SICK LEAVE" th:selected="${leaveDetails.leaveType == 'SICK LEAVE'}">SICK LEAVE</option>
+                    </select>
+                </div>
+                <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('leaveType')}" th:errors="*{leaveType}"></label>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Leave Reason :</label>
+                <div class="col-sm-6">
+                    <textarea th:field="*{reason}" placeholder="Leave Reason" class="form-control1" style="height: 100px;"></textarea>
+                </div>
+                <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></label>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-4">
+                    <button type="submit" class="btn btn-primary">Update Leave</button>
+                    <a th:href="@{/user/home}">
+                        <button type="button" class="btn btn-default">Cancel</button>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <script type="text/javascript">
-
-function validateChangePassword(){
-	var currentPassword = document.getElementById('currentPassword').value;
-	var newPassword = document.getElementById('newPassword').value;
-	var reEnterPassword = document.getElementById('reEnterPassword').value;
-	var regExp = /[a-zA-Z0-9]/;
-	
-	if((currentPassword == null || currentPassword == '') || (newPassword == null || newPassword == '')){
-		bootbox.alert("Empty password fields are not allowed!!!");
-		return false;
-	} else if(!regExp.test(currentPassword) || !regExp.test(newPassword)){
-		bootbox.alert("Please enter a valid Password!!! Special characters and spaces are not allowed!!!");
-		return false;
-	}
-	
-	if(newPassword != reEnterPassword){
-		bootbox.alert("New Password and Re-enter password don't match!!!");
-		return false;
-	}
-	
-	document.forms[0].action='/user/change-password';
-	document.forms[0].method="POST";
-	document.forms[0].submit();
-}
+	$(function(){
+		$('.leave-date').datepicker();
+	});
 </script>
 
 <!-- script-for sticky-nav -->
@@ -151,7 +174,7 @@ function validateChangePassword(){
 <!--inner block end here-->
 <!--copy rights start here-->
 <div class="copyrights">
-	 <p>&copy; 2018 D&D by Navin. All Rights Reserved </p>
+	 <p>Workiy Connect.</p>
 </div>	
 <!--COPY rights end here-->
 </div>

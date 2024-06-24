@@ -1,0 +1,418 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>EDIT PROFILE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Bootstrap Core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel='stylesheet' type='text/css' />
+<!-- Custom CSS -->
+<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+<link rel="stylesheet" th:href="@{/css/morris.css}" type="text/css"/>
+<!-- Graph CSS -->
+<link th:href="@{/css/font-awesome.css}" rel="stylesheet"> 
+<!-- jQuery -->
+<script th:src="@{/js/jquery-2.2.0.min.js}"></script>
+<!-- //jQuery -->
+<!-- tables -->
+<link rel="stylesheet" type="text/css" th:href="@{/css/table-style.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/basictable.css}" />
+<script type="text/javascript" th:src="@{/js/jquery.basictable.min.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+      $('#table-two-axis').basictable();
+
+    });
+</script>
+<!-- //tables -->
+<link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+<!-- lined-icons -->
+<link rel="stylesheet" th:href="@{/css/icon-font.min.css}" type='text/css' />
+<!-- //lined-icons -->
+<link rel="shortcut icon" th:href="@{/img/favicon.png}">
+<script th:src="@{/js/bootbox.min.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" type="text/css">
+<!--new add-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#country').change(function() {
+                var country = $(this).val();
+                $.ajax({
+                    url: '/getStates',
+                    type: 'GET',
+                    data: { country: country },
+                    success: function(states) {
+                        var $stateSelect = $('#state');
+                        $stateSelect.empty();
+                        $.each(states, function(index, state) {
+                            $stateSelect.append($('<option>', {
+                                value: state,
+                                text: state
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+<script>
+    var currentYear = (new Date()).getFullYear();
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#DOB').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:" + currentYear
+            });
+        });
+    </script>
+
+
+<!--new add-->
+</head> 
+<body>
+   <div class="page-container">
+   <!--/content-inner-->
+<div class="left-content">
+	   <div class="mother-grid-inner">
+            <!--header start here-->
+			<div class="header-main">
+					<div class="" style="float:left;">
+								<h2><a th:href="@{/user/home}" >EDIT PROFILE</a></h2>
+					</div>
+					<div class="profile_details w3l" style="float:right;">		
+						<ul>
+							<li class="dropdown profile_details_drop">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<!-- <div class="profile_img">	
+										<span class="prfil-img"><img th:src="@{/img/profile.jpg}" alt=""> </span> 
+										<div class="user-name">
+											<p sec:authentication="name"></p>
+											<span sec:authentication="principal.authorities"></span>
+										</div>
+										<i class="fa fa-angle-down"></i>
+										<i class="fa fa-angle-up"></i>
+										<div class="clearfix"></div>	
+									</div>	 -->
+                                    <div class="profile_img">    
+                                        <span class="prfil-img">
+                                            <img th:src="@{/profilePicture?email=${#authentication.principal.username}}" alt="Profile Picture"> 
+                                        </span> 
+                                        <div class="user-name">
+                                            <p sec:authentication="name"></p>
+                                            <span sec:authentication="principal.authorities"></span>
+                                        </div>
+                                        <i class="fa fa-angle-down"></i>
+                                        <i class="fa fa-angle-up"></i>
+                                        <div class="clearfix"></div>    
+                                    </div>
+								</a>
+								<ul class="dropdown-menu drp-mnu"> 
+									<li> <a th:href="@{/user/Profile}"><i class="fa fa-user"></i> Profile</a> </li> 
+									<li> <a th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a> </li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+							
+				     <div class="clearfix"> </div>	
+				</div>
+<!--heder end here-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a th:href="@{/user/home}">Home</a> <i class="fa fa-angle-right"></i> Edit Profile</li>
+</ol>
+<div class="row">
+    <div class="col-lg-12 ">
+          <div class="alert alert-info" th:if="${(param.errorMessage!= null)}" style="color: red;">
+              <p th:text="${param.errorMessage[0]}"></p>
+          </div>
+         
+          <div class="alert alert-info" th:if="${(param.successMessage != null)}">
+              <span th:text="${param.successMessage[0]}"></span>
+          </div>
+
+
+          <div class="grid-form1">
+            <h3>Hi <span th:object="${userProfile}" th:text="${userProfile.firstName} +' '+${userProfile.lastName}"></span></h3>
+            <div class="tab-content tab-pane active" id="horizontal-form">
+                <form class="form-horizontal" th:action="@{/updateProfile}" th:object="${userProfile}" enctype="multipart/form-data" method="post" id="profileForm">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>Personal Information</h2>
+                        <p style="margin-left: auto;"><h4>Employee Id : 00 <span th:text="${userProfile.id}"></span></h4></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Profile Picture :</label>
+                        <div class="col-sm-6">
+                            <input type="file" id="profilePicture" name="profilePicture" class="form-control1">
+                        </div>
+                        
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">E-mail :</label>
+                        <div class="col-sm-6">
+                            <input type="text" th:field="*{email}" placeholder="Email" class="form-control1" />
+                        </div>
+                    
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'email')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">First Name :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="firstName" th:field="*{firstName}" placeholder="First Name" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'firstName')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Last Name :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="lastName" th:field="*{lastName}" placeholder="Last Name" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'lastName')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+                    
+                    <div class="form-group">
+						<label class="col-sm-4 control-label">Date of Birth  :</label>
+						<div class="col-sm-6">
+							<input type="text" th:field="*{dateOfBirth}" placeholder="Date Of Birth" id="DOB" class="form-control1" />
+						</div>
+						<label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" ></label> 
+					</div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Blood Group :</label>
+                        <div class="col-sm-6">
+                            <select id="bloodGroup" th:field="*{bloodGroup}" class="form-control1">
+                                <option value="">Select Blood Group</option>
+                                <option th:each="bg : ${bloodGroup}" th:value="${bg}" th:text="${bg}"></option>
+                            </select>
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'bloodGroup')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Phone Number :</label>
+                        <div class="col-sm-6">
+                            <input type="tel" id="phone" th:field="*{phoneNumber}" placeholder="Phone Number" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'phone')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Emergency Phone Number :</label>
+                        <div class="col-sm-6">
+                            <input type="tel" id="emergencyPhone" th:field="*{emergencyPhoneNumber}" placeholder="Emergency Phone Number" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${#fields.hasErrors('emergencyPhoneNumber')}" th:errors="*{emergencyPhoneNumber}"></label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Temporary Address :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="temporaryAddress" th:field="*{temporaryAddress}" placeholder="Temporary Address" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'temporaryAddress')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Permanent Address :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="address" th:field="*{address}" placeholder="Permanent Address" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'street')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">ZIP Code :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="zip" th:field="*{zip}" placeholder="ZIP Code" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'zip')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">City :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="city" th:field="*{city}" placeholder="City" class="form-control1" />
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'city')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Country :</label>
+                        <div class="col-sm-6">
+                            <select id="country" th:field="*{country}" class="form-control1">
+                                <option value="">Select Country</option>
+                                <option th:each="country : ${countries}" th:value="${country}" th:text="${country}"></option>
+                            </select>
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'country')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+            
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">State :</label>
+                        <div class="col-sm-6">
+                            <select id="state" th:field="*{state}" class="form-control1">
+                                <option value="">Select State</option>
+                                <option th:each="state : ${states}" th:value="${state}" th:text="${state}"></option>
+                            </select>
+                        </div>
+                        <label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'state')}" th:text="${param.errorMessage[0]}"></label>
+                    </div>
+            
+                    
+                    <div class="form-group">
+						<label class="col-sm-4 control-label">Password :</label>
+						<div class="col-sm-6">
+							<input type="password" th:field="*{password}" placeholder="Password" class="form-control1" />
+						</div>
+						 
+						<label class="alert-danger col-sm-6 col-sm-offset-4" th:if="${(param.errorField != null) and (param.errorField[0] eq 'password')}" th:text="${param.errorMessage[0]}"></label>
+					</div>
+
+                    <div class="form-group ">
+                        <label class="col-sm-4 control-label">Role :</label>
+                        <div class="col-sm-6">
+                            <input type="radio" th:field="*{role}" value="MANAGER" style="width: 20%;" checked="checked">ADMIN
+                            <input type="radio" th:field="*{role}" value="EMPLOYEE" style="width: 20%;">EMPLOYEE
+                            <span id="roleDisplay" style="margin-left: 10px;"></span>
+                        </div>
+                    </div>
+
+                    <div class="row col-sm-offset-4">
+                        <button type="submit" class="btn btn-primary">Update My Profile</button>
+                        <a th:href="@{/user/lms}"><button type="button" class="btn btn-default">Cancel</button></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- <script>
+         document.addEventListener('DOMContentLoaded', function() {
+        var roleDisplay = document.getElementById('roleDisplay');
+        var managerRadio = document.querySelector('input[value="MANAGER"]');
+        var employeeRadio = document.querySelector('input[value="EMPLOYEE"]');
+
+        if (managerRadio.checked) {
+            roleDisplay.textContent = 'MANAGER';
+        } else if (employeeRadio.checked) {
+            roleDisplay.textContent = 'EMPLOYEE';
+        }
+
+        managerRadio.style.display = 'none';
+        employeeRadio.style.display = 'none';
+    });
+    </script> -->
+    <script>
+        function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+    
+    // Get all elements with class="tab-content" and hide them
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    
+    // Get all elements with class="tab" and remove the class "active"
+    tablinks = document.getElementsByClassName("tab");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Open the default tab
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelector(".tab").click();
+});
+
+    </script>
+
+
+
+    <!--inner block start here-->
+<div class="inner-block">
+
+</div>
+<!--inner block end here-->
+<!--copy rights start here-->
+<div class="copyrights">
+	 <p>Workiy Connect</p>
+</div>	
+<!--COPY rights end here-->
+</div>
+</div>
+  <!--//content-inner-->
+		<!--/sidebar-menu-->
+				<div class="sidebar-menu">
+					<header class="logo1">
+						<a href="#" class="sidebar-icon"> <span class="fa fa-bars"></span> </a> 
+					</header>
+						<div style="border-top:1px ridge rgba(255, 255, 255, 0.15)"></div>
+                           <div class="menu">
+									<ul id="menu" >
+										<li><a th:href="@{/user/home}"><i class="fa fa-home"></i> <span>Home</span><div class="clearfix"></div></a></li>
+										
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-users}"><i class="fa fa-users"></i> <span>Manage Users</span><div class="clearfix"></div></a></li>
+										
+										<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/admin/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>Manage Leaves</span><div class="clearfix"></div></a></li>
+										
+										<li><a th:href="@{/user/apply-leave}"><i class="fa fa-calendar-plus-o"></i> <span>Apply Leave</span><div class="clearfix"></div></a></li>
+										
+										<li><a th:href="@{/user/my-leaves}"><i class="fa fa-calendar-check-o"></i> <span>My Leaves</span><div class="clearfix"></div></a></li>
+										
+										<li><a th:href="@{/user/change-password}"><i class="fa fa-key"></i> <span>Change Password</span><div class="clearfix"></div></a></li>
+										
+								  	</ul>
+							</div>
+				</div>
+				<div class="clearfix"></div>		
+</div>
+<script>
+var toggle = true;
+			
+$(".sidebar-icon").click(function() {                
+  if (toggle)
+  {
+	$(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+	$("#menu span").css({"position":"absolute"});
+  }
+  else
+  {
+	$(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+	setTimeout(function() {
+	  $("#menu span").css({"position":"relative"});
+	}, 400);
+  }
+				
+				toggle = !toggle;
+			});
+</script>
+<!--js -->
+<script th:src="@{/js/jquery.nicescroll.js}"></script>
+<script th:src="@{/js/scripts.js}"></script>
+<!-- Bootstrap Core JavaScript -->
+   <script th:src="@{/js/bootstrap.min.js}"></script>
+   <!-- /Bootstrap Core JavaScript -->	   
+
+</body>
+</html>
